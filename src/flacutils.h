@@ -1,7 +1,7 @@
 #ifndef _CREST_FLACUTILS_H_
 #define _CREST_FLACUTILS_H_
 
-#include "../crest.h"
+#include "crest.h"
 
 #include <fstream>
 #include <string>

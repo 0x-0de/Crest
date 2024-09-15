@@ -1,7 +1,7 @@
 #ifndef _CREST_VORBISUTILS_H_
 #define _CREST_VORBISUTILS_H_
 
-#include "../crest.h"
+#include "crest.h"
 
 #include <string>
 

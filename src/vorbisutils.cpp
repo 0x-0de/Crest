@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "stb_vorbis.c"
+#include "../lib/stb_vorbis.c"
 
 crest::vorbis_stream::vorbis_stream(std::string filepath) : filepath(filepath)
 {
