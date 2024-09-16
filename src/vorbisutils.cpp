@@ -24,15 +24,15 @@ bool crest::vorbis_stream::initialize()
     int error;
     v = stb_vorbis_open_filename(filepath.c_str(), &error, NULL);
 
-    format.channels = ((stb_vorbis*) v)->channels;
-    format.sample_rate = ((stb_vorbis*) v)->sample_rate;
-    format.bit_depth = 16;
-
     if(v == NULL)
     {
         std::cerr << "[ERR] Cannot open file: " << filepath << std::endl;
         return false;
     }
+
+    format.channels = ((stb_vorbis*) v)->channels;
+    format.sample_rate = ((stb_vorbis*) v)->sample_rate;
+    format.bit_depth = 16;
 
     buffer_is_initialized = false;
     end_of_file = false;

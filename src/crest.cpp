@@ -9,8 +9,6 @@
 #include "Functiondiscoverykeys_devpkey.h"
 
 #include <algorithm>
-#include <chrono>
-#include <condition_variable>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -348,6 +346,11 @@ bool crest::audio_source::contains_stream(stream* s)
 UINT32 crest::audio_source::get_number_of_streams() const
 {
     return streams.size();
+}
+
+bool crest::audio_source::is_playing() const
+{
+    return streams.size() > 0;
 }
 
 void crest::audio_source::remove_stream(stream* s)

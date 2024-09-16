@@ -8,7 +8,7 @@
 #ifdef CREST_EXPORT
     #define CREST_LIB __declspec(dllexport)
 #else
-    #define CREST_LIB
+    #define CREST_LIB __declspec(dllimport)
 #endif
 
 #define CREST_STREAMFLAG_LOOP 0
@@ -73,6 +73,9 @@ namespace crest
 
             //Checks if a stream is currently contained by the audio source.
             bool contains_stream(stream* stream);
+
+            //Returns true if at least one stream is present on the source.
+            bool is_playing() const;
 
             //Obtains data from an audio source, puts in location specified by data, and also writes the amount read to read_length.
             void read(FLOAT** data, UINT32 requested_read_samples);
