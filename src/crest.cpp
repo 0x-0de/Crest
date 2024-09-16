@@ -339,6 +339,11 @@ void crest::audio_source::add_stream(stream* s)
     streams.push_back(str);
 }
 
+void crest::audio_source::add_transform(stream_transform* t)
+{
+    transforms.push_back(t);
+}
+
 bool crest::audio_source::contains_stream(stream* stream)
 {
     for(UINT32 i = 0; i < originals.size(); i++)
@@ -405,6 +410,11 @@ void crest::audio_source::read(FLOAT** data, UINT32 request_frames)
             originals.erase(streams.begin() + i);
             i--;
         }
+    }
+
+    for(UINT32 i = 0; i < transforms.size(); i++)
+    {
+        transforms[i]->transform(*data, samples, client_format);
     }
 }
 

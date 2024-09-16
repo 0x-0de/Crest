@@ -120,7 +120,7 @@ The declarations for both of these ```stream_transform```s can be found in ```in
 
 Like ```stream```s, ```stream_transform```s are abstract classes, but there is only one function that a subclass implementation must implement:
 
-- ```void stream_transform::transform(float* data, UINT32 length, audio_format format)``` - Transforms the array ```data```, which has a length ```length``` and an audio format defined by ```format```.
+- ```void stream_transform::transform(float* data, UINT32 length, audio_format format)``` - Transforms the array ```data```, which has a length of ```length``` samples *(not frames)*, and an audio format defined by ```format```.
 
 Additionally, here are the public functions of any ```stream_transform``` object:
 
