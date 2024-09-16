@@ -8,7 +8,7 @@ int main()
     crest::audio_source src;
     crest::register_source(&src);
 
-    crest::vorbis_stream stream("./tests/audio/revival 15.ogg");
+    crest::vorbis_stream stream("./tests/audio/jingle.ogg");
 
     src.add_stream(&stream);
 
