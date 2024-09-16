@@ -139,7 +139,7 @@ For example, a change buffer of 2 means that setting the volume with ```effect_v
 ## ```audio_source```
 The ```audio_source``` acts as a bridge between user-created instances of ```stream```s and Crest's audio threads. Once they're registered with Crest using ```register_source```, Crest will begin listening for any ```stream```s added to the ```audio_source```, and begin processing them to be outputted to the OS's sound buffer.
 
-Unlike ```stream```s and ```stream_transform```s, the ```audio_source``` class is concrete.
+Unlike ```stream```s and ```stream_transform```s, the ```audio_source``` class is concrete. Like ```stream```s, ```audio_source```s can contain ```stream_transform```s which are applied to all streams contained in the ```stream``` vector.
 
 - ```audio_source::audio_source()``` - Empty constructor.
 
@@ -147,11 +147,13 @@ Unlike ```stream```s and ```stream_transform```s, the ```audio_source``` class i
 
 - ```void audio_source::add_stream(stream* stream)``` - Copies the stream ```*stream``` and adds it to the ```streams``` vector. Assuming no errors with the stream, the ```audio_source``` should begin playing the stream afterward.
 
+- ```void audio_source::add_transform(stream_transform* transform)``` - Adds the transform ```transform``` to the source, which is then applied to the final addition of all streams contained in the source.
+
 - ```bool audio_source::contains_stream(stream* stream)``` - Returns true if ```streams``` contains a copy of ```stream```.
 
 - ```UINT32 audio_source::get_number_of_streams() const``` - Returns the number of ```stream```s in the ```streams``` vector.
 
-- ```bool is_playing() const``` - Returns true if the ```streams``` vector has at least 1 active stream. Note that this means that even if the final output of the ```audio_source``` is digital silence, this will still return true if the former case is true.
+- ```bool is_playing() const``` - Returns true if the ```stream``` vector has at least 1 active stream. Note that this means that even if the final output of the ```audio_source``` is digital silence, this will still return true if the former case is true.
 
 - ```void audio_source::remove_streams(stream* stream)``` - Removes and deletes all instances (copies) of ```stream``` from the ```streams``` vector.
 
