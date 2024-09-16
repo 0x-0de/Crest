@@ -20,7 +20,7 @@ The necessary header files are located in the ```include``` folder. You could al
 
 Run the provided makefile with ```make build``` to build the .dll for Windows devices, or use the .dll provided in the ```bin``` folder. Remember to link with ```-lcrest```.
 
-For building tests, run ```make test_[#]``` (replace ```[#]``` with ```01```, ```02```, or whatever two-figure number corresponds to which test) after running ```make build```.
+For building tests, run ```make test_[#]``` (replace ```[#]``` with ```01```, ```02```, or whatever two-figure number corresponds to which test) after running ```make build```. Note that these tests are expected to be run in the root directory.
 
 ### Linux
 Not supported yet.
