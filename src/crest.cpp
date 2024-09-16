@@ -306,7 +306,11 @@ void crest::stream::set_flag(UINT16 flag, bool val)
     flags[flag] = val;
 }
 
-crest::stream_transform::stream_transform() {}
+crest::stream_transform::stream_transform()
+{
+    change_buffer = 0;
+}
+
 crest::stream_transform::~stream_transform() {}
 
 void crest::stream_transform::set_change_buffer_length(float value)
@@ -329,15 +333,17 @@ crest::audio_source::~audio_source()
 
 void crest::audio_source::add_stream(stream* s)
 {
+    originals.push_back(s);
+
     stream* str = s->copy();
     streams.push_back(str);
 }
 
-bool crest::audio_source::contains_stream(stream* s)
+bool crest::audio_source::contains_stream(stream* stream)
 {
-    for(UINT64 i = 0; i < streams.size(); i++)
+    for(UINT32 i = 0; i < originals.size(); i++)
     {
-        if(streams[i] == s) return true;
+        if(originals[i] == stream) return true;
     }
 
     return false;
@@ -353,14 +359,16 @@ bool crest::audio_source::is_playing() const
     return streams.size() > 0;
 }
 
-void crest::audio_source::remove_stream(stream* s)
+void crest::audio_source::remove_streams(stream* s)
 {
     for(UINT32 i = 0; i < streams.size(); i++)
     {
-        if(streams[i] == s)
+        if(originals[i] == s)
         {
+            delete streams[i];
+            originals.erase(originals.begin() + i);
             streams.erase(streams.begin() + i);
-            break;
+            i--;
         }
     }
 }
@@ -394,6 +402,7 @@ void crest::audio_source::read(FLOAT** data, UINT32 request_frames)
         {
             delete streams[i];
             streams.erase(streams.begin() + i);
+            originals.erase(streams.begin() + i);
             i--;
         }
     }
@@ -744,4 +753,9 @@ void crest::remove_source(crest::audio_source* source)
             break;
         }
     }
+}
+
+crest::audio_format crest::get_client_audio_format()
+{
+    return client_format;
 }

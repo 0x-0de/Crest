@@ -68,24 +68,17 @@ namespace crest
             audio_source();
             ~audio_source();
 
-            //Adds an audio stream to the audio source.
             void add_stream(stream* stream);
-
-            //Checks if a stream is currently contained by the audio source.
             bool contains_stream(stream* stream);
-
-            //Returns true if at least one stream is present on the source.
             bool is_playing() const;
 
-            //Obtains data from an audio source, puts in location specified by data, and also writes the amount read to read_length.
             void read(FLOAT** data, UINT32 requested_read_samples);
-
-            //Removes an audio stream from the source.
-            void remove_stream(stream* stream);
+            void remove_streams(stream* stream);
 
             UINT32 get_number_of_streams() const;
         private:
             std::vector<stream*> streams;
+            std::vector<stream*> originals;
     };
 
     void CREST_LIB init(UINT32 buffer_ms);
@@ -93,6 +86,8 @@ namespace crest
 
     void CREST_LIB register_source(audio_source* source);
     void CREST_LIB remove_source(audio_source* source);
+
+    audio_format CREST_LIB get_client_audio_format();
 }
 
 #endif
