@@ -63,7 +63,7 @@ The ```audio_format``` structure contains information about the audio format of 
 ## ```stream```
 The ```stream``` interface is perhaps the most important and most useful structure in Crest. ```stream``` objects generate audio, in the form of a linear array of floating-point samples allocated on the heap. They can either generate this audio through synthesis, or through pulling audio data from sources like audio files or other ```stream```s.
 
-There are currently 3 existing implementations of ```stream``` objects in Crest, not including the ones that may be found in the ```tests``` of this library. Each of these library-built ```stream``` objects are for the latter use case: pulling data out of compressed and uncompressed audio files. Each ```stream``` has it's own ```audio_format``` structure, and it's paramount that this structure is defined upon initalizing a ```stream```.
+There are currently 3 existing implementations of ```stream``` objects in Crest, not including the ones that may be found in the ```tests``` of this library. Each of these library-built ```stream``` objects are for the latter use case: pulling data out of compressed and uncompressed audio files. Each ```stream``` has it's own ```audio_format``` structure, and it's paramount that this structure is defined upon initalizing a ```stream```. It's also important to update the ```stream```'s protected ```usable``` flag to indicate potentially erroneous object creation. If the constructor is called, this bool will default to ```true```.
 
 ```wav_stream``` pulls data out of uncompressed ```.wav``` files. The declarations for this ```stream``` implementation are found within ```include/wavutils.h```.
 
@@ -84,13 +84,15 @@ Because ```stream``` is an abstract class, each implementation of the interface 
 
 Here are the other public functions of a ```stream``` class that do not need implementations, as well as it's constructor and destructor:
 
-```stream::stream()``` does nothing other than initialize all ```stream``` flags to ```false```. It's recommended to still initialize subclasses with this constructor to prevent uninitialized flags.
+```stream::stream()``` does nothing other than initialize all ```stream``` flags to ```false```, and initialize ```usable``` to true. It's recommended to still initialize subclasses with this constructor to prevent uninitialized flags.
 
 ```stream::~stream()``` is a virtual destructor that is currently empty.
 
 ```void stream::add_transform(stream_transform* transform)``` - Adds a ```stream_transform``` object to the stream, which is applied to the audio data obtained with the ```pull``` function after all necessary sample rate and channel conversions have been applied.
 
 ```bool stream::get_flag(UINT16 flag) const``` - Returns the value of one of the ```stream``` flags, corresponding with the ```flag``` parameter.
+
+```bool stream::is_usable() const``` - Returns the value of the stream's ```usable``` member. If this value is ```false```, then ```audio_source``` objects will not play it.
 
 ```audio_format stream::get_format() const``` - Returns the ```audio_format``` struct being used by the stream.
 
@@ -106,6 +108,8 @@ Finally, here are the protected fields of ```stream``` that will probably need t
 ```std::vector<stream_transform*> transforms``` - A vector containing the list of ```stream_transform``` objects which this stream is currently using.
 
 ```bool flags[1]``` - The values of all the flags that this stream is currently using.
+
+```bool usable``` - Flag that determines if ```audio_source```s can play the stream.
 
 ## ```stream_transform```
 The ```stream_transform``` object allows you to define an additional layer of audio processing that occurs after the data has been pulled and converted to the client format. These transformations to the data have to be one-to-one, meaning that the size of the array of data must be preserved before and after the transformation.
