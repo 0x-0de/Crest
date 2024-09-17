@@ -4,7 +4,7 @@
 
 #include "../lib/stb_vorbis.c"
 
-crest::vorbis_stream::vorbis_stream(std::string filepath) : filepath(filepath)
+crest::vorbis_stream::vorbis_stream(std::string filepath) : stream(), filepath(filepath)
 {
     can_read_file = initialize();
     usable = can_read_file;

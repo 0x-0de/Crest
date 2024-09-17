@@ -36,7 +36,7 @@ bool goto_byte_seq(const char* seq, std::ifstream& reader)
     return true;
 }
 
-crest::wav_stream::wav_stream(std::string filepath) : filepath(filepath)
+crest::wav_stream::wav_stream(std::string filepath) : stream(), filepath(filepath)
 {
     can_read_file = initialize();
     usable = can_read_file;

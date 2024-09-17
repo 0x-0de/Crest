@@ -865,7 +865,7 @@ bool scan_frame(bit_reader* reader, crest::audio_format* format, FLAC_frame* fra
 //flac_stream
 //-------------------------------------------------------------------------------
 
-crest::flac_stream::flac_stream(std::string filepath) : filepath(filepath)
+crest::flac_stream::flac_stream(std::string filepath) : stream(), filepath(filepath)
 {
     reader = new bit_reader(filepath.c_str(), 8192);
     can_read_file = initialize();
