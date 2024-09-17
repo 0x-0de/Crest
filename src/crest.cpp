@@ -203,7 +203,7 @@ static std::vector<crest::audio_source*> sources;
 crest::stream::stream()
 {
     usable = true;
-    
+
     for(UINT32 i = 0; i < 1; i++)
         flags[i] = false;
 }
@@ -223,6 +223,11 @@ bool crest::stream::get_flag(UINT16 flag) const
 crest::audio_format crest::stream::get_format() const
 {
     return format;
+}
+
+bool crest::stream::is_usable() const
+{
+    return usable;
 }
 
 float* crest::stream::pull_data(UINT32 request_frames, UINT32* length, bool* terminate)
@@ -335,6 +340,12 @@ crest::audio_source::~audio_source()
 
 void crest::audio_source::add_stream(stream* s)
 {
+    if(!s->is_usable())
+    {
+        std::cerr << "[CREST] Cannot add unusable stream to audio_source." << std::endl;
+        return;
+    }
+    
     originals.push_back(s);
 
     stream* str = s->copy();
