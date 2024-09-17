@@ -4,11 +4,11 @@
 
 static const char* wav_files[5] =
 {
-    "./tests/audio/wav/arp base.wav",
-    "./tests/audio/wav/arp junk in header.wav",
-    "./tests/audio/wav/arp missing data.wav",
-    "./tests/audio/wav/arp missing format.wav",
-    "./tests/audio/wav/arp missing riff.wav"
+    "./tests/audio/wav/arp base.wav",             //Base case - no errors or uncommon things in the .wav file.
+    "./tests/audio/wav/arp junk in header.wav",   //Uncommon case - Header of the .wav file contains a JUNK chunk, which should be ignored.
+    "./tests/audio/wav/arp missing data.wav",     //Faulty case - .wav file is missing 'data' section, or the header indicating the beginning of said data section. File is unusable.
+    "./tests/audio/wav/arp missing format.wav",   //Faulty case - .wav file is missing format header, or the signifier for it. File is unusable.
+    "./tests/audio/wav/arp missing riff.wav"      //Faulty case - .wav file is missing RIFF tag. File is unusable.
 };
 
 static crest::wav_stream* streams[5];
