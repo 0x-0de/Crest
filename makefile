@@ -12,7 +12,9 @@ LIBS_TEST = -L./bin/ -lcrest
 BUILD_DEF = -DCREST_EXPORT
 
 OBJ_BUILD = $(addprefix $(DIR_OBJ)/, crest.o wavutils.o conv.o flacutils.o effects.o vorbisutils.o)
+
 OBJ_TEST_01 = $(addprefix $(DIR_OBJ_TEST)/, 01_simple_demo.o)
+OBJ_TEST_02 = $(addprefix $(DIR_OBJ_TEST)/, 02_wav_files.o)
 
 OBJ_TEST = bin/test.o
 
@@ -22,6 +24,10 @@ build: $(OBJ_BUILD)
 
 test_01: $(OBJ_TEST_01)
 	$(GCC) $(OBJ_TEST_01) $(LIBS_TEST) -o $(DIR_EXP)/test_01.exe
+	rm -rf $(DIR_OBJ)
+
+test_02: $(OBJ_TEST_02)
+	$(GCC) $(OBJ_TEST_02) $(LIBS_TEST) -o $(DIR_EXP)/test_02.exe
 	rm -rf $(DIR_OBJ)
 
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.cpp $(DIR_SRC)/%.h | $(DIR_OBJ)
