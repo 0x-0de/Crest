@@ -202,6 +202,8 @@ static std::vector<crest::audio_source*> sources;
 
 crest::stream::stream()
 {
+    usable = true;
+    
     for(UINT32 i = 0; i < 1; i++)
         flags[i] = false;
 }

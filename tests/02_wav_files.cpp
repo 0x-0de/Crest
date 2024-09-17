@@ -4,11 +4,11 @@
 
 static const char* wav_files[5] =
 {
-    "./tests/audio/arp base.wav",
-    "./tests/audio/arp junk in header.wav",
-    "./tests/audio/arp missing data.wav",
-    "./tests/audio/arp missing format.wav",
-    "./tests/audio/arp missing riff.wav"
+    "./tests/audio/wav/arp base.wav",
+    "./tests/audio/wav/arp junk in header.wav",
+    "./tests/audio/wav/arp missing data.wav",
+    "./tests/audio/wav/arp missing format.wav",
+    "./tests/audio/wav/arp missing riff.wav"
 };
 
 static crest::wav_stream* streams[5];

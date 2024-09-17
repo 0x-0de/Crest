@@ -869,6 +869,7 @@ crest::flac_stream::flac_stream(std::string filepath) : filepath(filepath)
 {
     reader = new bit_reader(filepath.c_str(), 8192);
     can_read_file = initialize();
+    usable = can_read_file;
 
     read_frame_index = 0;
     read_sample_index = 0;

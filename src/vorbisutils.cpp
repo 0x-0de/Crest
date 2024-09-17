@@ -7,6 +7,7 @@
 crest::vorbis_stream::vorbis_stream(std::string filepath) : filepath(filepath)
 {
     can_read_file = initialize();
+    usable = can_read_file;
 }
 
 crest::vorbis_stream::~vorbis_stream()

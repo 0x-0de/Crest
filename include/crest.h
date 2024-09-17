@@ -50,6 +50,8 @@ namespace crest
             bool get_flag(UINT16 flag) const;
             audio_format get_format() const;
 
+            bool is_usable() const;
+
             virtual float* pull(UINT32 request_frames, UINT32* length, bool* terminate) = 0;
             float* pull_data(UINT32 request_frames, UINT32* length, bool* terminate);
 
@@ -58,6 +60,8 @@ namespace crest
             void set_flag(UINT16 flag, bool val);
         protected:
             audio_format format;
+            bool usable;
+            
             std::vector<stream_transform*> transforms;
 
             bool flags[1];
