@@ -19,9 +19,8 @@ void print_bits(bool* bits, unsigned int length)
 This test is mainly for a revised bit reader which I hope to implement in the current .FLAC decoder.
 The current (as of writing) bit reader has proven to be too slow to process high-resolution audio files.
 
-The example reads the file ./tests/audio/flac/subset/01 - blocksize 4096.flac.
-
-
+The example reads the file ./tests/audio/flac/subset/01 - blocksize 4096.flac. See the instructions
+located in the empty folder to gain access to the file.
 */
 
 class bit_reader
@@ -41,8 +40,7 @@ class bit_reader
         bool can_read;
 
         char* buffer;
-        unsigned int bit_index, buffer_bit_index;
-        unsigned int byte_length;
+        unsigned int bit_index, buffer_bit_index, byte_length;
 };
 
 bit_reader::bit_reader(std::string filepath)
@@ -121,8 +119,6 @@ int main()
     unsigned int test = reader.read_as_int(32);
 
     std::cout << test << std::endl;
-
-    //delete[] test;
-
+    
     return 0;
 }
