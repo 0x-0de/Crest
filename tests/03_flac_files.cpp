@@ -86,11 +86,12 @@ int main()
 
     for(int i = 0; i < 64; i++)
     {
+        std::cout << "Reading stream " << (i + 1) << "..." << std::endl;
         streams[i] = new crest::flac_stream(flac_files[i]);
     }
 
     bool active = true;
-    int current_index = 40;
+    int current_index = 0;
 
     src.add_transform(&volume);
 

@@ -19,6 +19,10 @@ struct FLAC_frame
     UINT64 number;
 };
 
+typedef long long int64;
+typedef unsigned long long uint64;
+
+/*
 class bit_reader
 {
     public:
@@ -58,6 +62,42 @@ class bit_reader
 
         char* cache;
         inline char read_next_byte();
+};
+*/
+
+class bit_reader
+{
+    public:
+        bit_reader(std::string filepath);
+        ~bit_reader();
+
+        uint64 get_bit_index() const;
+        std::string get_filepath() const;
+        uint64 get_file_size() const;
+
+        void increment_bit_index(uint64 amount);
+        void jump_to_next_byte();
+
+        bool readable() const;
+
+        uint64 read_as_int(uint64 length, bool is_signed);
+
+        bool read_bit();
+        bool* read_bits(uint64 length);
+
+        void read_buffer();
+
+        uint64 read_unary(bool end_bit);
+        uint64 read_utf8();
+
+        void set_bit_index(uint64 index);
+    private:
+        std::string filepath;
+        std::ifstream* reader;
+        bool can_read;
+
+        char* buffer;
+        uint64 bit_index, buffer_bit_index, byte_length;
 };
 
 namespace crest

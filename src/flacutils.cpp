@@ -1,5 +1,6 @@
 #include "flacutils.h"
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 
@@ -16,6 +17,8 @@ char flip_byte(char a)
     }
     return b;
 }
+
+/*
 
 //-------------------------------------------------------------------------------
 //Bitreader class and functions.
@@ -249,7 +252,9 @@ INT64 bit_reader::read_as_int(const UINT8 bit_length, bool is_signed)
         }
     }
     */
-   
+
+/*
+
     bool buffer[bit_length];
     read_bits(buffer, bit_length);
 
@@ -319,6 +324,226 @@ UINT64 bit_reader::read_utf8()
     }
 
     return result;
+}
+
+*/
+
+#define BIT_READER_BUFFER_SIZE 1024
+
+/*
+class bit_reader
+{
+    public:
+        bit_reader(std::string filepath);
+        ~bit_reader();
+
+        uint64 get_bit_index() const;
+        std::string get_filepath() const;
+        uint64 get_file_size() const;
+
+        void increment_bit_index(uint64 amount);
+        void jump_to_next_byte();
+
+        uint64 read_as_int(uint64 length, bool is_signed);
+
+        bool read_bit();
+        bool* read_bits(uint64 length);
+
+        void read_buffer();
+
+        uint64 read_unary(bool end_bit);
+        uint64 read_utf8();
+
+        void set_bit_index(uint64 index);
+    private:
+        std::string filepath;
+        std::ifstream* reader;
+        bool can_read;
+
+        char* buffer;
+        uint64 bit_index, buffer_bit_index, byte_length;
+};
+*/
+
+bit_reader::bit_reader(std::string filepath)
+{
+    reader = new std::ifstream(filepath.c_str(), std::ios::binary);
+
+    if(!reader->good())
+    {
+        std::cerr << "[ERR] Cannot read file: " << filepath << std::endl;
+        can_read = false;
+    }
+    else
+    {
+        reader->seekg(0, reader->end);
+        byte_length = reader->tellg();
+        reader->seekg(0, reader->beg);
+
+        buffer = new char[BIT_READER_BUFFER_SIZE];
+
+        bit_index = 0;
+        buffer_bit_index = 0;
+
+        can_read = true;
+
+        read_buffer();
+    }
+}
+
+bit_reader::~bit_reader()
+{
+    delete[] buffer;
+}
+
+void bit_reader::increment_bit_index(uint64 amount)
+{
+    bit_index += amount;
+    buffer_bit_index += amount;
+
+    if(buffer_bit_index >= (BIT_READER_BUFFER_SIZE << 3))
+    {
+        read_buffer();
+    }
+}
+
+void bit_reader::jump_to_next_byte()
+{
+    uint64 bit = bit_index & 7;
+    uint64 jump = bit == 0 ? 0 : (8 - bit);
+
+    increment_bit_index(jump);
+}
+
+bool bit_reader::readable() const
+{
+    return can_read;
+}
+
+bool bit_reader::read_bit()
+{
+    if(buffer_bit_index >= (BIT_READER_BUFFER_SIZE << 3))
+    {
+        read_buffer();
+    }
+
+    uint64 bit = bit_index & 7;
+    uint64 byte = buffer_bit_index >> 3;
+
+    bit_index++;
+    buffer_bit_index++;
+
+    return ((buffer[byte] >> (7 - bit)) & 1);
+}
+
+uint64 bit_reader::get_bit_index() const
+{
+    return bit_index;
+}
+
+std::string bit_reader::get_filepath() const
+{
+    return filepath;
+}
+
+uint64 bit_reader::get_file_size() const
+{
+    return byte_length;
+}
+
+bool* bit_reader::read_bits(uint64 length)
+{
+    bool* buff = new bool[length];
+    for(uint64 i = 0; i < length; i++)
+    {
+        buff[i] = read_bit();
+    }
+    return buff;
+}
+
+void bit_reader::read_buffer()
+{
+    uint64 start = ((bit_index >> 3) / BIT_READER_BUFFER_SIZE) * BIT_READER_BUFFER_SIZE;
+    reader->seekg(start, reader->beg);
+
+    uint64 length = std::min(BIT_READER_BUFFER_SIZE, (signed) (byte_length - (bit_index >> 3)));
+    reader->read(buffer, length);
+
+    buffer_bit_index &= ((BIT_READER_BUFFER_SIZE << 3) - 1);
+}
+
+uint64 bit_reader::read_as_int(uint64 length, bool is_signed)
+{    
+    int64 result = 0;
+    for(int i = (signed) length - 1; i > -1; i--)
+        result |= (int) read_bit() << i;
+
+    if(is_signed)
+    {
+        int64 cap = ((int64) 1 << (length - 1));
+        int64 correction = ((int64) 1 << length) * -1;
+        
+        if(result >= cap)
+        {
+            result += correction;
+        }
+    }
+
+    return result;
+}
+
+uint64 bit_reader::read_unary(bool end_bit)
+{
+    uint64 result = 0;
+    bool b = read_bit();
+
+    while(b != end_bit)
+    {
+        result++;
+        b = read_bit();
+    }
+
+    return result;
+}
+
+uint64 bit_reader::read_utf8()
+{
+    uint64 size = read_unary(0);
+
+    uint64 result = 0;
+
+    if(size == 0)
+    {
+        result = read_as_int(7, false);
+        return result;
+    }
+
+    for(uint64 i = 0; i < size; i++)
+    {
+        result <<= 6;
+        if(i == 0)
+        {
+            unsigned char n = read_as_int((8 - size) - 1, false);
+            result += n;
+        }
+        else
+        {
+            unsigned char h = read_as_int(2, false);
+            unsigned char n = read_as_int(6, false);
+
+            if(h == 2) result += n;
+        }
+    }
+
+    return result;
+}
+
+void bit_reader::set_bit_index(uint64 index)
+{
+    bit_index = index;
+    buffer_bit_index = index & ((BIT_READER_BUFFER_SIZE << 3) - 1);
+
+    read_buffer();
 }
 
 //-------------------------------------------------------------------------------
@@ -867,7 +1092,7 @@ bool scan_frame(bit_reader* reader, crest::audio_format* format, FLAC_frame* fra
 
 crest::flac_stream::flac_stream(std::string filepath) : stream(), filepath(filepath)
 {
-    reader = new bit_reader(filepath.c_str(), 8192);
+    reader = new bit_reader(filepath);
     can_read_file = initialize();
     usable = can_read_file;
 
@@ -899,6 +1124,11 @@ crest::stream* crest::flac_stream::copy()
 
 bool crest::flac_stream::initialize()
 {
+    if(!reader->readable())
+    {
+        return false;
+    }
+
     if(!read_flac_tag(reader))
     {
         std::cerr << "[ERR] fLaC tag not present at the start of the file. Are you sure this is a valid FLAC file?" << std::endl;
@@ -913,7 +1143,8 @@ bool crest::flac_stream::initialize()
     }
 
     UINT64 frame_offset = 0;
-    while(reader->get_bit_index() < reader->get_file_size())
+    UINT64 file_bit_size = reader->get_file_size() << 3;
+    while(reader->get_bit_index() < file_bit_size)
     {
         FLAC_frame frame;
         if(!scan_frame(reader, &format, &frame, &frame_offset))
@@ -923,7 +1154,7 @@ bool crest::flac_stream::initialize()
         }
         frames.push_back(frame);
     }
-
+    
     return true;
 }
 
