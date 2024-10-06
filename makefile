@@ -17,6 +17,7 @@ OBJ_TEST_01 = $(addprefix $(DIR_OBJ_TEST)/, 01_simple_demo.o)
 OBJ_TEST_02 = $(addprefix $(DIR_OBJ_TEST)/, 02_wav_files.o)
 OBJ_TEST_03 = $(addprefix $(DIR_OBJ_TEST)/, 03_flac_files.o)
 OBJ_TEST_04 = $(addprefix $(DIR_OBJ_TEST)/, 04_bit_reader.o)
+OBJ_TEST_05 = $(addprefix $(DIR_OBJ_TEST)/, 05_stressing_vorbis.o)
 
 OBJ_TEST = bin/test.o
 
@@ -38,6 +39,10 @@ test_03: $(OBJ_TEST_03)
 
 test_04: $(OBJ_TEST_04)
 	$(GCC) $(OBJ_TEST_04) $(LIBS_TEST) -o $(DIR_EXP)/test_04.exe
+	rm -rf $(DIR_OBJ)
+
+test_05: $(OBJ_TEST_05)
+	$(GCC) $(OBJ_TEST_05) $(LIBS_TEST) -o $(DIR_EXP)/test_05.exe
 	rm -rf $(DIR_OBJ)
 
 $(DIR_OBJ)/%.o: $(DIR_SRC)/%.cpp $(DIR_SRC)/%.h | $(DIR_OBJ)
