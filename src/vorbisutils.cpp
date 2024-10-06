@@ -65,7 +65,7 @@ float* crest::vorbis_stream::pull(UINT32 request, UINT32* length, bool* eof)
 
         if(end_of_file) break;
 
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < format.channels; i++)
         {
             data[data_offset] = buffer[i][buffer_offset];
             data_offset++;

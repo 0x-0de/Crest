@@ -5,8 +5,10 @@
 
 #include <vector>
 
-#ifdef CREST_EXPORT
+#if defined(CREST_EXPORT)
     #define CREST_LIB __declspec(dllexport)
+#elif defined(CREST_STATIC)
+    #define CREST_LIB
 #else
     #define CREST_LIB __declspec(dllimport)
 #endif

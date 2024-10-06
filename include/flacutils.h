@@ -19,45 +19,42 @@ struct FLAC_frame
     UINT64 number;
 };
 
+typedef long long int64;
+typedef unsigned long long uint64;
+
 class bit_reader
 {
     public:
-        bit_reader(const char* filepath, UINT16 cache_size);
+        bit_reader(std::string filepath);
         ~bit_reader();
 
-        void clear_cache();
-        void read_cache();
+        uint64 get_bit_index() const;
+        std::string get_filepath() const;
+        uint64 get_file_size() const;
 
-        UINT16 get_cache_size() const { return cache_size; }
-
-        const char* get_filepath() const { return filepath; }
-        UINT64 get_file_size() const { return filesize; }
-
-        UINT64 get_bit_index() const { return bit_index; }
-        void set_bit_index(UINT64 index);
-        
-        void increment_bit_index(INT64 value);
+        void increment_bit_index(uint64 amount);
         void jump_to_next_byte();
 
+        bool readable() const;
+
+        uint64 read_as_int(uint64 length, bool is_signed);
+
         bool read_bit();
-        void read_bits(bool* buffer, UINT8 length);
-        INT64 read_as_int(UINT8 bit_length, bool is_signed);
+        bool* read_bits(uint64 length);
 
-        UINT64 read_unary(bool end_bit);
-        UINT64 read_utf8();
+        void read_buffer();
 
-        double elapsed_cache_read_time, elapsed_cache_total_above_1;
+        uint64 read_unary(bool end_bit);
+        uint64 read_utf8();
+
+        void set_bit_index(uint64 index);
     private:
-        const char* filepath;
-        UINT16 cache_size;
-        UINT32 cache_bit_size;
+        std::string filepath;
+        std::ifstream* reader;
+        bool can_read;
 
-        FILE* reader;
-        UINT64 bit_index;
-        UINT64 filesize;
-
-        char* cache;
-        inline char read_next_byte();
+        char* buffer;
+        uint64 bit_index, buffer_bit_index, byte_length;
 };
 
 namespace crest

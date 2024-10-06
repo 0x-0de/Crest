@@ -6,6 +6,7 @@
 #include "../include/crest.h"
 #include "../include/effects.h"
 #include "../include/vorbisutils.h"
+#include "../include/wavutils.h"
 
 int main()
 {
@@ -34,10 +35,9 @@ int main()
             src_1.add_stream(&stream_1);
             src_1_timer = 0;
         }
-        if(src_2_timer == 33)
+        if(src_2_timer == 10)
         {
             src_2.add_stream(&stream_2);
-            src_2_timer = 0;
         }
 
         std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(10));
