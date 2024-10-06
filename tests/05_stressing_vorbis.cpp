@@ -30,14 +30,15 @@ int main()
 
     while(true)
     {
-        if(src_1_timer == 100)
+        if(src_1_timer == 20)
         {
             src_1.add_stream(&stream_1);
             src_1_timer = 0;
         }
-        if(src_2_timer == 10)
+        if(src_2_timer == 15)
         {
             src_2.add_stream(&stream_2);
+            src_2_timer = 0;
         }
 
         std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(10));

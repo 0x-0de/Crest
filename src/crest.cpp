@@ -420,7 +420,7 @@ void crest::audio_source::read(FLOAT** data, UINT32 request_frames)
         {
             delete streams[i];
             streams.erase(streams.begin() + i);
-            originals.erase(streams.begin() + i);
+            originals.erase(originals.begin() + i);
             i--;
         }
     }
